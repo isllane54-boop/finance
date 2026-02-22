@@ -6,11 +6,31 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
-body {
-  @apply bg-slate-50 text-slate-900 font-sans;
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 font-sans transition-colors duration-300;
+  }
+  
+  .dark body {
+    @apply bg-slate-950 text-slate-50;
+  }
 }
 
 .glass-card {
-  @apply bg-white/80 backdrop-blur-md border border-slate-200 shadow-sm rounded-2xl;
+  @apply bg-white/80 backdrop-blur-md border border-slate-200 shadow-sm rounded-2xl transition-all;
+}
+
+.dark .glass-card {
+  @apply bg-slate-900/80 border-slate-800 shadow-none;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 

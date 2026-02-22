@@ -26,3 +26,19 @@ export interface Summary {
   variable: number;
   invested: number;
 }
+
+export interface Goal {
+  id: number;
+  name: string;
+  target_amount: number;
+  current_amount: number;
+  deadline: string;
+  category: string;
+}
+
+export interface Budget {
+  id: number;
+  category: string;
+  limit_amount: number;
+  period: 'monthly';
+}

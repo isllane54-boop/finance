@@ -31,6 +31,22 @@ db.exec(`
     expected_return REAL,
     date TEXT NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS goals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    target_amount REAL NOT NULL,
+    current_amount REAL DEFAULT 0,
+    deadline TEXT NOT NULL,
+    category TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS budgets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category TEXT NOT NULL UNIQUE,
+    limit_amount REAL NOT NULL,
+    period TEXT DEFAULT 'monthly'
+  );
 `);
 
 async function startServer() {
@@ -79,6 +95,37 @@ async function startServer() {
     const invested = db.prepare("SELECT SUM(amount) as total FROM investments").get().total || 0;
     
     res.json({ income, variable_income, fixed, variable, invested });
+  });
+
+  app.get("/api/goals", (req, res) => {
+    const goals = db.prepare("SELECT * FROM goals").all();
+    res.json(goals);
+  });
+
+  app.post("/api/goals", (req, res) => {
+    const { name, target_amount, current_amount, deadline, category } = req.body;
+    const info = db.prepare(
+      "INSERT INTO goals (name, target_amount, current_amount, deadline, category) VALUES (?, ?, ?, ?, ?)"
+    ).run(name, target_amount, current_amount || 0, deadline, category);
+    res.json({ id: info.lastInsertRowid });
+  });
+
+  app.delete("/api/goals/:id", (req, res) => {
+    db.prepare("DELETE FROM goals WHERE id = ?").run(req.params.id);
+    res.sendStatus(200);
+  });
+
+  app.get("/api/budgets", (req, res) => {
+    const budgets = db.prepare("SELECT * FROM budgets").all();
+    res.json(budgets);
+  });
+
+  app.post("/api/budgets", (req, res) => {
+    const { category, limit_amount } = req.body;
+    const info = db.prepare(
+      "INSERT OR REPLACE INTO budgets (category, limit_amount) VALUES (?, ?)"
+    ).run(category, limit_amount);
+    res.json({ id: info.lastInsertRowid });
   });
 
   // Vite middleware for development
