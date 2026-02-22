@@ -370,127 +370,117 @@ export default function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className={cn(
-            "min-h-screen flex bg-slate-50 transition-all duration-500",
-            viewMode === 'mobile' ? "max-w-[450px] mx-auto shadow-2xl border-x border-slate-200" : "w-full"
+            "min-h-screen flex transition-all duration-500",
+            viewMode === 'mobile' ? "max-w-[450px] mx-auto shadow-2xl border-x border-slate-200 flex-col bg-slate-50 pb-24" : "w-full bg-slate-50"
           )}
         >
-          {/* Sidebar */}
-          <aside className={cn(
-            "bg-white border-r border-slate-200 flex flex-col transition-all",
-            viewMode === 'mobile' ? "w-20" : "w-64"
-          )}>
-            <div className="p-6">
-              <div className="flex items-center gap-2 mb-8">
-                <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white shrink-0">
-                  <Wallet size={20} />
+          {/* Sidebar (Web) or Bottom Nav (Mobile) */}
+          {viewMode === 'web' ? (
+            <aside className="bg-white border-r border-slate-200 flex flex-col w-64 shrink-0">
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-8">
+                  <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white shrink-0">
+                    <Wallet size={20} />
+                  </div>
+                  <h1 className="font-bold text-xl tracking-tight">FinPro</h1>
                 </div>
-                {viewMode === 'web' && <h1 className="font-bold text-xl tracking-tight">FinPro</h1>}
+
+                <nav className="space-y-1">
+                  <SidebarItem icon={<LayoutDashboard size={20} />} label="Dashboard" active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
+                  <SidebarItem icon={<ArrowDownCircle size={20} />} label="Transações" active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} />
+                  <SidebarItem icon={<TrendingUp size={20} />} label="Investimentos" active={activeTab === 'investments'} onClick={() => setActiveTab('investments')} />
+                  <SidebarItem icon={<LineChartIcon size={20} />} label="Projeções" active={activeTab === 'projections'} onClick={() => setActiveTab('projections')} />
+                  <SidebarItem icon={<Calendar size={20} />} label="Impostos" active={activeTab === 'taxes'} onClick={() => setActiveTab('taxes')} />
+                  <SidebarItem icon={<Flag size={20} />} label="Metas" active={activeTab === 'goals'} onClick={() => setActiveTab('goals')} />
+                  <SidebarItem icon={<BarChart3 size={20} />} label="Orçamentos" active={activeTab === 'budgets'} onClick={() => setActiveTab('budgets')} />
+                </nav>
               </div>
 
-              <nav className="space-y-1">
-                <SidebarItem 
-                  icon={<LayoutDashboard size={20} />} 
-                  label={viewMode === 'web' ? "Dashboard" : ""} 
-                  active={activeTab === 'dashboard'} 
-                  onClick={() => setActiveTab('dashboard')} 
-                />
-                <SidebarItem 
-                  icon={<ArrowDownCircle size={20} />} 
-                  label={viewMode === 'web' ? "Transações" : ""} 
-                  active={activeTab === 'transactions'} 
-                  onClick={() => setActiveTab('transactions')} 
-                />
-                <SidebarItem 
-                  icon={<TrendingUp size={20} />} 
-                  label={viewMode === 'web' ? "Investimentos" : ""} 
-                  active={activeTab === 'investments'} 
-                  onClick={() => setActiveTab('investments')} 
-                />
-                <SidebarItem 
-                  icon={<LineChartIcon size={20} />} 
-                  label={viewMode === 'web' ? "Projeções" : ""} 
-                  active={activeTab === 'projections'} 
-                  onClick={() => setActiveTab('projections')} 
-                />
-                <SidebarItem 
-                  icon={<Calendar size={20} />} 
-                  label={viewMode === 'web' ? "Impostos" : ""} 
-                  active={activeTab === 'taxes'} 
-                  onClick={() => setActiveTab('taxes')} 
-                />
-                <SidebarItem 
-                  icon={<Flag size={20} />} 
-                  label={viewMode === 'web' ? "Metas" : ""} 
-                  active={activeTab === 'goals'} 
-                  onClick={() => setActiveTab('goals')} 
-                />
-                <SidebarItem 
-                  icon={<BarChart3 size={20} />} 
-                  label={viewMode === 'web' ? "Orçamentos" : ""} 
-                  active={activeTab === 'budgets'} 
-                  onClick={() => setActiveTab('budgets')} 
-                />
-              </nav>
-            </div>
-
-            <div className="mt-auto p-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
-              <div className="flex gap-2">
+              <div className="mt-auto p-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setDarkMode(!darkMode)}
+                    className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 p-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                    <span className="text-xs font-bold uppercase">{darkMode ? 'Modo Claro' : 'Modo Escuro'}</span>
+                  </button>
+                  <button onClick={() => setViewMode(null)} className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 p-2 rounded-lg transition-colors flex items-center justify-center">
+                    <Smartphone size={20} />
+                  </button>
+                </div>
                 <button 
-                  onClick={() => setDarkMode(!darkMode)}
-                  className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 p-2 rounded-lg transition-colors flex items-center justify-center gap-2"
-                  title="Alternar Tema"
+                  onClick={() => { setModalType('transaction'); setIsModalOpen(true); }}
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-200 font-medium"
                 >
-                  {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-                  {viewMode === 'web' && <span className="text-xs font-bold uppercase">{darkMode ? 'Modo Claro' : 'Modo Escuro'}</span>}
-                </button>
-                <button 
-                  onClick={() => setViewMode(null)}
-                  className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 p-2 rounded-lg transition-colors flex items-center justify-center"
-                  title="Trocar Visualização"
-                >
-                  {viewMode === 'mobile' ? <Monitor size={20} /> : <Smartphone size={20} />}
+                  <Plus size={20} />
+                  Novo Registro
                 </button>
               </div>
-              
-              <button 
-                onClick={() => { setModalType('transaction'); setIsModalOpen(true); }}
-                className={cn(
-                  "w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-200 font-medium",
-                  viewMode === 'mobile' ? "h-12 w-12 mx-auto p-0" : "py-3 px-4"
-                )}
-              >
-                <Plus size={20} />
-                {viewMode === 'web' && "Novo Registro"}
-              </button>
-            </div>
-          </aside>
+            </aside>
+          ) : (
+            <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-200 z-40 px-2 pb-safe">
+              <div className="max-w-[450px] mx-auto flex justify-around items-center h-24">
+                <MobileNavItem icon={<LayoutDashboard />} label="Início" active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
+                <MobileNavItem icon={<ArrowDownCircle />} label="Extrato" active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} />
+                <div className="relative -top-8">
+                  <button 
+                    onClick={() => { setModalType('transaction'); setIsModalOpen(true); }}
+                    className="w-16 h-16 bg-indigo-600 text-white rounded-2xl shadow-xl shadow-indigo-200 flex items-center justify-center active:scale-90 transition-transform"
+                  >
+                    <Plus size={32} />
+                  </button>
+                </div>
+                <MobileNavItem icon={<TrendingUp />} label="Invest" active={activeTab === 'investments'} onClick={() => setActiveTab('investments')} />
+                <MobileNavItem icon={<Flag />} label="Metas" active={activeTab === 'goals'} onClick={() => setActiveTab('goals')} />
+              </div>
+            </nav>
+          )}
 
           {/* Main Content */}
-          <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+          <main className={cn(
+            "flex-1 overflow-y-auto",
+            viewMode === 'mobile' ? "p-5" : "p-8"
+          )}>
             <header className="flex justify-between items-center mb-8">
               <div>
                 <h2 className={cn(
                   "font-bold text-slate-900 dark:text-white capitalize",
-                  viewMode === 'mobile' ? "text-xl" : "text-2xl"
+                  viewMode === 'mobile' ? "text-2xl" : "text-3xl"
                 )}>
                   {activeTab === 'dashboard' ? 'Visão Geral' : 
-                   activeTab === 'transactions' ? 'Minhas Transações' : 
-                   activeTab === 'investments' ? 'Carteira de Investimentos' : 
-                   activeTab === 'projections' ? 'Projeções Futuras' : 
-                   activeTab === 'goals' ? 'Minhas Metas' : 'Deduções e Impostos'}
+                   activeTab === 'transactions' ? 'Transações' : 
+                   activeTab === 'investments' ? 'Investimentos' : 
+                   activeTab === 'projections' ? 'Projeções' : 
+                   activeTab === 'goals' ? 'Metas' : 
+                   activeTab === 'budgets' ? 'Orçamentos' : 'Impostos'}
                 </h2>
-                {viewMode === 'web' && <p className="text-slate-500 dark:text-slate-400">Bem-vindo de volta ao seu controle financeiro.</p>}
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
+                  {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
+                </p>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Saldo Total</p>
-                  <p className={cn(
-                    "font-bold text-indigo-600",
-                    viewMode === 'mobile' ? "text-lg" : "text-xl"
-                  )}>{formatCurrency(summary.income + summary.variable_income - summary.fixed - summary.variable)}</p>
-                </div>
-              </div>
+              
+              {viewMode === 'mobile' && (
+                <button 
+                  onClick={() => setDarkMode(!darkMode)}
+                  className="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-500 shadow-sm active:scale-95 transition-transform"
+                >
+                  {darkMode ? <Sun size={24} /> : <Moon size={24} />}
+                </button>
+              )}
             </header>
+
+            <div className="mb-8">
+              <div className="glass-card p-6 bg-indigo-600 text-white border-none shadow-xl shadow-indigo-200">
+                <p className="text-indigo-100 text-xs font-bold uppercase tracking-wider mb-1">Saldo Total Disponível</p>
+                <h3 className={cn(
+                  "font-bold",
+                  viewMode === 'mobile' ? "text-3xl" : "text-4xl"
+                )}>
+                  {formatCurrency(summary.income + summary.variable_income - summary.fixed - summary.variable)}
+                </h3>
+              </div>
+            </div>
 
         <AnimatePresence mode="wait">
           {activeTab === 'dashboard' && (
@@ -666,71 +656,115 @@ export default function App() {
             >
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 glass-card">
-                  <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                  <div className={cn(
+                    "p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center",
+                    viewMode === 'mobile' && "flex-col gap-4 items-stretch"
+                  )}>
                     <h3 className="font-bold text-lg">Histórico Completo</h3>
                     <div className="flex gap-2">
-                      <label className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 cursor-pointer hover:bg-slate-200 transition-colors">
-                        <FileUp size={16} /> Importar CSV
+                      <label className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 cursor-pointer hover:bg-slate-200 transition-colors">
+                        <FileUp size={20} /> Importar CSV
                         <input type="file" accept=".csv" className="hidden" onChange={handleImportCSV} />
                       </label>
-                      <button onClick={() => { setModalType('transaction'); setIsModalOpen(true); }} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-100 dark:shadow-none">
-                        <Plus size={16} /> Adicionar
+                      <button onClick={() => { setModalType('transaction'); setIsModalOpen(true); }} className="flex-1 bg-indigo-600 text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-100 dark:shadow-none">
+                        <Plus size={20} /> Adicionar
                       </button>
                     </div>
                   </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                      <thead>
-                        <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-400 text-xs uppercase tracking-wider">
-                          <th className="px-6 py-4 font-bold">Descrição</th>
-                          <th className="px-6 py-4 font-bold">Tipo</th>
-                          <th className="px-6 py-4 font-bold">Categoria</th>
-                          <th className="px-6 py-4 font-bold">Data</th>
-                          <th className="px-6 py-4 font-bold text-right">Valor</th>
-                          <th className="px-6 py-4 font-bold text-center">Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                        {transactions.map(t => (
-                          <tr key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td className="px-6 py-4">
-                              <div className="flex flex-col">
-                                <span className="font-medium text-slate-900 dark:text-white">{t.description}</span>
-                                {t.is_recurring && t.installments && (
-                                  <span className="text-[10px] text-indigo-500 font-bold uppercase">
-                                    {t.installments} parcelas • Fim: {getEndDate(t.start_date || t.date, t.installments)}
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4">
-                              <span className={cn(
-                                "px-2 py-1 rounded-full text-[10px] font-bold uppercase",
-                                t.type === 'income' ? "bg-emerald-100 text-emerald-700" : 
-                                t.type === 'variable_income' ? "bg-emerald-50 text-emerald-600" :
-                                t.type === 'fixed_expense' ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"
+                  
+                  {viewMode === 'web' ? (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left">
+                        <thead>
+                          <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-400 text-xs uppercase tracking-wider">
+                            <th className="px-6 py-4 font-bold">Descrição</th>
+                            <th className="px-6 py-4 font-bold">Tipo</th>
+                            <th className="px-6 py-4 font-bold">Categoria</th>
+                            <th className="px-6 py-4 font-bold">Data</th>
+                            <th className="px-6 py-4 font-bold text-right">Valor</th>
+                            <th className="px-6 py-4 font-bold text-center">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                          {transactions.map(t => (
+                            <tr key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                              <td className="px-6 py-4">
+                                <div className="flex flex-col">
+                                  <span className="font-medium text-slate-900 dark:text-white">{t.description}</span>
+                                  {t.is_recurring && t.installments && (
+                                    <span className="text-[10px] text-indigo-500 font-bold uppercase">
+                                      {t.installments} parcelas • Fim: {getEndDate(t.start_date || t.date, t.installments)}
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className={cn(
+                                  "px-2 py-1 rounded-full text-[10px] font-bold uppercase",
+                                  t.type === 'income' ? "bg-emerald-100 text-emerald-700" : 
+                                  t.type === 'variable_income' ? "bg-emerald-50 text-emerald-600" :
+                                  t.type === 'fixed_expense' ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"
+                                )}>
+                                  {t.type === 'income' ? 'E. Fixa' : t.type === 'variable_income' ? 'E. Variável' : t.type === 'fixed_expense' ? 'G. Fixo' : 'G. Variável'}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-sm">{t.category}</td>
+                              <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-sm">{format(new Date(t.date), 'dd/MM/yyyy')}</td>
+                              <td className={cn(
+                                "px-6 py-4 text-right font-bold",
+                                (t.type === 'income' || t.type === 'variable_income') ? "text-emerald-600" : "text-slate-900 dark:text-white"
                               )}>
-                                {t.type === 'income' ? 'E. Fixa' : t.type === 'variable_income' ? 'E. Variável' : t.type === 'fixed_expense' ? 'G. Fixo' : 'G. Variável'}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-sm">{t.category}</td>
-                            <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-sm">{format(new Date(t.date), 'dd/MM/yyyy')}</td>
-                            <td className={cn(
-                              "px-6 py-4 text-right font-bold",
+                                {formatCurrency(t.amount)}
+                              </td>
+                              <td className="px-6 py-4 text-center">
+                                <button onClick={() => deleteTransaction(t.id)} className="text-slate-300 hover:text-rose-500 transition-colors">
+                                  <Trash2 size={18} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                      {transactions.map(t => (
+                        <div key={t.id} className="p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <div className="flex items-center gap-4">
+                            <div className={cn(
+                              "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0",
+                              (t.type === 'income' || t.type === 'variable_income') ? "bg-emerald-100 text-emerald-600" : 
+                              t.type === 'fixed_expense' ? "bg-rose-100 text-rose-600" : "bg-amber-100 text-amber-600"
+                            )}>
+                              {(t.type === 'income' || t.type === 'variable_income') ? <ArrowUpCircle size={24} /> : <ArrowDownCircle size={24} />}
+                            </div>
+                            <div>
+                              <p className="font-bold text-slate-900 dark:text-white">{t.description}</p>
+                              <p className="text-xs text-slate-400">
+                                {t.category} • {format(new Date(t.date), 'dd MMM yyyy', { locale: ptBR })}
+                              </p>
+                              {t.is_recurring && t.installments && (
+                                <p className="text-[10px] text-indigo-500 font-bold uppercase mt-1">
+                                  {t.installments} parcelas • Fim: {getEndDate(t.start_date || t.date, t.installments)}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-right flex flex-col items-end gap-2">
+                            <p className={cn(
+                              "font-bold text-lg",
                               (t.type === 'income' || t.type === 'variable_income') ? "text-emerald-600" : "text-slate-900 dark:text-white"
                             )}>
-                              {formatCurrency(t.amount)}
-                            </td>
-                            <td className="px-6 py-4 text-center">
-                              <button onClick={() => deleteTransaction(t.id)} className="text-slate-300 hover:text-rose-500 transition-colors">
-                                <Trash2 size={18} />
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                              {(t.type === 'income' || t.type === 'variable_income') ? '+' : '-'} {formatCurrency(t.amount)}
+                            </p>
+                            <button onClick={() => deleteTransaction(t.id)} className="text-slate-300 hover:text-rose-500 p-1">
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-6">
                   <CalendarView transactions={transactions} />
@@ -810,16 +844,16 @@ export default function App() {
               <div className="glass-card p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="font-bold text-lg">Meus Ativos</h3>
-                  <button onClick={() => { setModalType('investment'); setIsModalOpen(true); }} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-md shadow-indigo-100">
-                    <Plus size={16} /> Novo Ativo
+                  <button onClick={() => { setModalType('investment'); setIsModalOpen(true); }} className="bg-indigo-600 text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center gap-2 shadow-md shadow-indigo-100">
+                    <Plus size={20} /> Novo Ativo
                   </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {investments.map(inv => (
-                    <div key={inv.id} className="border border-slate-100 rounded-xl p-4 hover:border-indigo-200 transition-all group">
+                    <div key={inv.id} className="border border-slate-100 rounded-2xl p-5 hover:border-indigo-200 transition-all group">
                       <div className="flex justify-between items-start mb-4">
-                        <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center">
-                          <TrendingUp size={20} />
+                        <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                          <TrendingUp size={24} />
                         </div>
                         <span className="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded">
                           {inv.type}
@@ -846,11 +880,11 @@ export default function App() {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-6"
             >
-              <div className="flex gap-4 mb-6">
+              <div className="flex gap-4 mb-6 overflow-x-auto no-scrollbar pb-2">
                 <button 
                   onClick={() => setProjectionView('chart')}
                   className={cn(
-                    "px-4 py-2 rounded-lg text-sm font-bold transition-all",
+                    "px-6 py-3 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none",
                     projectionView === 'chart' ? "bg-indigo-600 text-white shadow-md" : "bg-white text-slate-500 border border-slate-200"
                   )}
                 >
@@ -859,7 +893,7 @@ export default function App() {
                 <button 
                   onClick={() => setProjectionView('reports')}
                   className={cn(
-                    "px-4 py-2 rounded-lg text-sm font-bold transition-all",
+                    "px-6 py-3 rounded-xl text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none",
                     projectionView === 'reports' ? "bg-indigo-600 text-white shadow-md" : "bg-white text-slate-500 border border-slate-200"
                   )}
                 >
@@ -914,7 +948,7 @@ export default function App() {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  <ReportsView transactions={transactions} formatCurrency={formatCurrency} />
+                  <ReportsView transactions={transactions} formatCurrency={formatCurrency} viewMode={viewMode!} />
                 </div>
               )}
             </motion.div>
@@ -1219,6 +1253,26 @@ export default function App() {
   );
 }
 
+function MobileNavItem({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={cn(
+        "flex flex-col items-center justify-center gap-1 w-16 h-16 rounded-2xl transition-all active:scale-90",
+        active ? "text-indigo-600" : "text-slate-400"
+      )}
+    >
+      <div className={cn(
+        "p-2 rounded-xl transition-all",
+        active ? "bg-indigo-50" : "bg-transparent"
+      )}>
+        {React.cloneElement(icon as React.ReactElement, { size: 24 })}
+      </div>
+      <span className="text-[10px] font-bold uppercase tracking-tighter">{label}</span>
+    </button>
+  );
+}
+
 function SidebarItem({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) {
   return (
     <button 
@@ -1244,24 +1298,24 @@ function SummaryCard({ title, value, icon, color }: { title: string, value: numb
   };
 
   return (
-    <div className="glass-card p-5">
+    <div className="glass-card p-6">
       <div className="flex justify-between items-start mb-4">
         <div className={cn(
-          "w-10 h-10 rounded-xl flex items-center justify-center",
-          color === 'emerald' ? "bg-emerald-50" : 
-          color === 'rose' ? "bg-rose-50" : 
-          color === 'amber' ? "bg-amber-50" : "bg-indigo-50"
+          "w-12 h-12 rounded-2xl flex items-center justify-center",
+          color === 'emerald' ? "bg-emerald-50 text-emerald-600" : 
+          color === 'rose' ? "bg-rose-50 text-rose-600" : 
+          color === 'amber' ? "bg-amber-50 text-amber-600" : "bg-indigo-50 text-indigo-600"
         )}>
-          {icon}
+          {React.cloneElement(icon as React.ReactElement, { size: 24 })}
         </div>
       </div>
       <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">{title}</p>
-      <h4 className="text-xl font-bold text-slate-900">{formatCurrency(value)}</h4>
+      <h4 className="text-2xl font-bold text-slate-900 dark:text-white">{formatCurrency(value)}</h4>
     </div>
   );
 }
 
-function ReportsView({ transactions, formatCurrency }: { transactions: Transaction[], formatCurrency: (v: number) => string }) {
+function ReportsView({ transactions, formatCurrency, viewMode }: { transactions: Transaction[], formatCurrency: (v: number) => string, viewMode: 'mobile' | 'web' }) {
   const [period, setPeriod] = useState<'monthly' | 'quarterly' | 'semi-annual' | 'annual'>('monthly');
 
   const currentYear = getYear(new Date());
@@ -1347,19 +1401,22 @@ function ReportsView({ transactions, formatCurrency }: { transactions: Transacti
   const periodData = getPeriodData();
 
   return (
-    <div className="glass-card p-8">
+    <div className={cn(
+      "glass-card",
+      viewMode === 'mobile' ? "p-5" : "p-8"
+    )}>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h3 className="text-xl font-bold mb-1">Relatórios de Desempenho</h3>
           <p className="text-slate-500 text-sm">Acompanhe sua evolução financeira por períodos.</p>
         </div>
-        <div className="flex bg-slate-100 p-1 rounded-xl">
+        <div className="flex bg-slate-100 p-1 rounded-xl w-full md:w-auto overflow-x-auto no-scrollbar">
           {(['monthly', 'quarterly', 'semi-annual', 'annual'] as const).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-bold transition-all capitalize",
+                "px-4 py-2.5 rounded-lg text-xs font-bold transition-all capitalize whitespace-nowrap flex-1 md:flex-none",
                 period === p ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
               )}
             >
@@ -1369,9 +1426,9 @@ function ReportsView({ transactions, formatCurrency }: { transactions: Transacti
         </div>
         <button 
           onClick={exportToPDF}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-100"
+          className="w-full md:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-100"
         >
-          <Download size={18} />
+          <Download size={20} />
           Exportar PDF
         </button>
       </div>
